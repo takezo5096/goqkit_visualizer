@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>GoQKit Visualizer</title>
+    <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/@mdi/font@4.x/css/materialdesignicons.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+    <style>
+        section {
+            overflow: scroll;
+            margin: 5px auto 30px;
+            padding: 20px;
+            width: 100%;
+            height: 300px;
+            border: 1px solid #888;
+            border-radius: 4px;
+            background-color: #222;
+        }
+    </style>
+</head>
+<body>
+<div id="app">
+    <v-app>
+        <v-app-bar app dense dark>
+            <v-app-bar-title><strong>GoQKit</strong></v-app-bar-title>
+        </v-app-bar>
+        <v-main>
+            <v-container>
+                <v-layout wrap>
+                    <v-flex xs2 sm2 md2>
+                        <h2>Quantum Circuit</h2>
+                    </v-flex>
+                    <v-flex xs2 sm2 md2>
+                        <v-slider v-model="circuit_slider" max="100" min="30" step="10"
+                                  append-icon="mdi-magnify-plus-outline"
+                                  prepend-icon="mdi-magnify-minus-outline"
+                                  @change="scaleCircuitCanvas()"></v-slider>
+                    </v-flex>
+                </v-layout>
+                <section>
+                    <canvas id="cv" width="680" height="400"></canvas>
+                </section>
+
+                <v-layout wrap>
+                    <v-flex xs2 sm2 md2>
+                        <h2>QBits</h2>
+                    </v-flex>
+                    <v-flex xs2 sm2 md2>
+                        <v-slider v-model="qbits_slider" max="100" min="30" step="10"
+                                  append-icon="mdi-magnify-plus-outline"
+                                  prepend-icon="mdi-magnify-minus-outline"
+                                  @change="scaleQBitsCanvas()"></v-slider>
+                    </v-flex>
+                    <v-spacer></v-spacer>
+                    <v-flex xs7 sm7 md7>
+                        <v-radio-group v-model="qbits_col" row @change="qbitsCol()">
+                            <v-radio label="8" value="8"></v-radio>
+                            <v-radio label="16" value="16"></v-radio>
+                            <v-radio label="32" value="32"></v-radio>
+                            <v-radio label="64" value="64"></v-radio>
+                            <v-radio label="128" value="128"></v-radio>
+                            <v-radio label="256 columns" value="256"></v-radio>
+                        </v-radio-group>
+                    </v-flex>
+                </v-layout>
+                <section>
+                    <canvas id="qbits" width="680" height="400"></canvas>
+                </section>
+                <v-textarea
+                        outlined
+                        name="message"
+                        label="Output"
+                        :value="message"
+                        id="message"
+                ></v-textarea>
+            </v-container>
+        </v-main>
+        <template>
+            <v-footer padless dence dark>
+                <v-col class="text-center" cols="12">
+                    {{ new Date().getFullYear() }} — <strong>GoQKit</strong>
+                </v-col>
+            </v-footer>
+        </template>
+    </v-app>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
+<script src="/goqkit_visualizer.js"></script>
+<script>
+    app = new Vue({
+        el: '#app',
+        vuetify: new Vuetify({ theme: { dark: true },}),
+        //vuetify: new Vuetify({ theme: { dark: false },}),
+
+        data: () => ({
+            qbits_data:null,
+            message: "foo bar",
+            qbits_col: "8",
+
+            circuit_canvas_width: 0,
+            circuit_canvas_hegit: 0,
+            qbits_canvas_width: 0,
+            qbits_canvas_hegit: 0,
+
+            circuit_slider: 100,
+            qbits_slider: 100,
+        }),
+
+        methods: {
+
+            window:onload = function() {
+                const sock = new WebSocket("ws://" + location.host + "/data");
+                sock.onmessage = function (event) {
+                    app.qbits_data = JSON.parse(event.data);
+                    app.message = app.qbits_data.message;
+
+
+                    const wh = draw_circuit(app.qbits_data);
+                    app.circuit_canvas_width = wh[0];
+                    app.circuit_canvas_heigit = wh[1];
+
+                    const wh_q = draw_qbits(app.qbits_data, parseInt(this.qbits_col));
+                    app.qbits_canvas_width = wh_q[0];
+                    app.qbits_canvas_heigit = wh_q[1];
+
+                    app.qbitsCol();
+                    app.scaleCircuitCanvas();
+                }
+            },
+
+            qbitsCol: function (){
+                const wh_q = draw_qbits(app.qbits_data, parseInt(this.qbits_col));
+                app.qbits_canvas_width = wh_q[0];
+                app.qbits_canvas_heigit = wh_q[1];
+
+                this.scaleQBitsCanvas();
+            },
+
+            scaleCircuitCanvas: function(){
+                const ratio = this.circuit_slider/100;
+                app.scaleCanvas("circuit", document.getElementById("cv"), ratio);
+            },
+            scaleQBitsCanvas: function(){
+                const ratio = this.qbits_slider/100;
+                app.scaleCanvas("qbits", document.getElementById("qbits"), ratio);
+            },
+
+            scaleCanvas: function (tp, ct, ratio){
+                let w = app.circuit_canvas_width;
+                if (tp == 'qbits') {
+                    w = app.qbits_canvas_width;
+                }
+                const nw = w * ratio;
+                ct.style.width = nw.toString() + "px";
+            }
+        },
+    })
+
+</script>
+</body>
+</html>
