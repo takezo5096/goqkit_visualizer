@@ -122,6 +122,7 @@ function qbit_circle(ctx_q, x, y, p, rad) {
 
     var deg = 180 / Math.PI * rad
     var deg2 = deg - 180
+
     var rad2 = Math.PI / 180 * deg2
 
     ctx_q.beginPath()
@@ -297,7 +298,7 @@ function draw_circuit(test_json) {
         var s = null
         if (op.options != null || op.op_name == "W" || op.op_name == "R") {
 
-            if (op.op_name == "P") {
+            if (op.op_name == "Ro") {
                 if (op.options[0] != 0) {
                     s = "x" + op.options[0] + "°"
                 } else if (op.options[1] != 0) {
@@ -309,6 +310,10 @@ function draw_circuit(test_json) {
                 s = op.options[0]
             } else if (op.op_name == "W") {
                 s = "1"
+            } else if (op.op_name == "P"){
+                if (op.options[0] != 0) {
+                    s = "z" + op.options[0] + "°"
+                }
             }
 
             qbit_rect(ctx, bi, current_x, y, op.op_name, s)
@@ -322,7 +327,7 @@ function draw_circuit(test_json) {
         if (op.control_qbits != null) {
             for (var z = 0; z < op.control_qbits.length; z++) {
                 var y2 = qbits_map[op.control_qbits[z]]
-                if (op.op_name == "P" || op.op_name == "X" || op.op_name == "Y" || op.op_name == "Z"){
+                if (op.op_name == "Ro"  || op.op_name == "P" || op.op_name == "X" || op.op_name == "Y" || op.op_name == "Z"){
                     qbit_rect(ctx, bi, current_x, y2, op.op_name, s)
                 }else {
                     dot_rect(ctx, bi, current_x, y2)
