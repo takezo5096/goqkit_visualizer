@@ -2,14 +2,13 @@ package main
 
 import (
 	"fmt"
+	"golang.org/x/net/websocket"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
 	"time"
-	"golang.org/x/net/websocket"
-	)
-
+)
 
 func main() {
 
@@ -36,13 +35,13 @@ func getContentFile(filePath string) string {
 func getJsonFile(ftime time.Time) (bool, time.Time, string) {
 	filePath := "goqkit.json"
 
-	f,err := os.Open(filePath)
+	f, err := os.Open(filePath)
 	if err != nil {
 		panic(err)
 	}
 	defer f.Close()
 
-	info,err := f.Stat()
+	info, err := f.Stat()
 	if err != nil {
 		panic(err)
 	}
@@ -58,43 +57,35 @@ func getJsonFile(ftime time.Time) (bool, time.Time, string) {
 	return true, modTime, string(bytes)
 }
 
-
-
 // send a html content
 func getPageHandle(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("getPageHandle")
 
 	fmt.Fprint(w, getContentFile("goqkit.html"))
 }
 
-func getJSHandle(w http.ResponseWriter, r *http.Request){
-	fmt.Println("getJSHandle")
+func getJSHandle(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprint(w, getContentFile("goqkit_visualizer.js"))
 }
-
 
 // send json data
 func dataHandler(ws *websocket.Conn) {
 
 	fmt.Println("dataHandler start")
 
-	cts :=  time.Date(2001, 5, 20, 23, 59, 59, 0, time.UTC)
+	cts := time.Date(2001, 5, 20, 23, 59, 59, 0, time.UTC)
 	for {
 		modified, modTime, data := getJsonFile(cts)
 		if modified {
 			cts = modTime
 			err := websocket.Message.Send(ws, data)
-			//err := WebSocket.JSON.Send(ws, data)
 			if err != nil {
-				log.Printf("error sending data: %v\n", err)
+				fmt.Println(err)
+				time.Sleep(1000 * time.Millisecond)
 				continue
-				//return
-			}else {
+			} else {
 				fmt.Println("sent data")
 			}
-		}/*else {
-			fmt.Println("data not modified")
-		}*/
+		}
 		time.Sleep(1000 * time.Millisecond)
 	}
 }
