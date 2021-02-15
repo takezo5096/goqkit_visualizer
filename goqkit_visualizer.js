@@ -352,7 +352,7 @@ function draw_qbits(test_json, cols){
     }
 
     //change the canvas size
-    cvs_q.width = (15 + 5) * 2 * (test_json.qbits.length > cols ? cols+1 : test_json.qbits.length + 1)
+    cvs_q.width = (15 + 5) * 2 * (test_json.qbits.length > cols ? cols+1 : test_json.qbits.length + 2)
     cvs_q.height = (15 + 5) * 2 * y_size
 
     var qx = 0
