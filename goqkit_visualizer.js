@@ -103,13 +103,28 @@ function not_rect(ctx, bi, x, y) {
     ctx.stroke();
 
 }
+function swap_rect(ctx, bi, x, y) {
+    var w = 12
+
+    ctx.lineWidth = 2
+    ctx.strokeStyle = "#eee"
+    ctx.beginPath();
+    //horizontal
+    ctx.moveTo((x+1) * bi.op_w +bi.op_h_space-w+3, y * bi.op_h+ bi.op_v_space-w+3);
+    ctx.lineTo((x+1) * bi.op_w +bi.op_h_space+w-3, y * bi.op_h+ bi.op_v_space+w-3);
+    //vertical
+    ctx.moveTo((x+1) * bi.op_w +bi.op_h_space+w-3, y * bi.op_h+ bi.op_v_space-w+3);
+    ctx.lineTo((x+1) * bi.op_w +bi.op_h_space-w+3, y * bi.op_h+ bi.op_v_space+w-3);
+    ctx.stroke();
+
+}
 
 
 function dot_rect(ctx, bi, x, y) {
     var arc_r = 6
     ctx.beginPath()
     ctx.fillStyle = "#999"
-    ctx.arc((x + 1) * bi.op_w + bi.op_h_space - bi.op_dot_box_size / 2 + arc_r,
+    ctx.arc((x + 1) * bi.op_w + bi.op_h_space - bi.op_dot_box_size / 2 + arc_r-1,
         y * bi.op_h + bi.op_v_space - bi.op_dot_box_size / 2 + arc_r,
         arc_r, 0, 360, false)
     ctx.fill()
@@ -352,11 +367,14 @@ function draw_circuit(test_json) {
             qbit_rect(ctx, bi, current_x, y, op.op_name, s)
         } else {
             if (op.op_name == "S") {
-                qbit_rect(ctx, bi, current_x, qbits_map[op.swap_qbit], op.op_name)
+                //qbit_rect(ctx, bi, current_x, qbits_map[op.swap_qbit], op.op_name)
+                swap_rect(ctx, bi, current_x, qbits_map[op.swap_qbit])
             }
 
-            if (op.op_name == "N"){
+            if (op.op_name == "N") {
                 not_rect(ctx, bi, current_x, y)
+            }else if (op.op_name == "S"){
+                swap_rect(ctx, bi, current_x, y)
             }else {
                 qbit_rect(ctx, bi, current_x, y, op.op_name)
             }
