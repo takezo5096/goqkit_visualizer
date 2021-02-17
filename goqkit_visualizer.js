@@ -73,6 +73,38 @@ function qbit_rect(ctx, bi, x, y, s, s2) {
     }
 }
 
+function not_rect(ctx, bi, x, y) {
+    var arc_r = 12
+
+    ctx.beginPath()
+    ctx.fillStyle = "#eee"
+    ctx.arc((x + 1) * bi.op_w + bi.op_h_space,
+        y * bi.op_h + bi.op_v_space,
+        arc_r, 0, 360, false)
+    ctx.fill()
+    ctx.beginPath()
+
+    ctx.lineWidth = 2
+    ctx.strokeStyle = "#999"
+    ctx.arc((x + 1) * bi.op_w + bi.op_h_space,
+        y * bi.op_h + bi.op_v_space,
+        arc_r, 0, 360, false)
+    ctx.stroke()
+
+    ctx.lineWidth = 2
+    ctx.strokeStyle = "#000"
+    ctx.beginPath();
+    //horizontal
+    ctx.moveTo((x+1) * bi.op_w +bi.op_h_space-arc_r+1, y * bi.op_h+ bi.op_v_space);
+    ctx.lineTo((x+1) * bi.op_w +bi.op_h_space+arc_r-1, y * bi.op_h+ bi.op_v_space);
+    //vertical
+    ctx.moveTo((x+1) * bi.op_w +bi.op_h_space, y * bi.op_h+ bi.op_v_space-arc_r+1);
+    ctx.lineTo((x+1) * bi.op_w +bi.op_h_space, y * bi.op_h+ bi.op_v_space+arc_r-1);
+    ctx.stroke();
+
+}
+
+
 function dot_rect(ctx, bi, x, y) {
     var arc_r = 6
     ctx.beginPath()
@@ -150,6 +182,7 @@ function qbit_circle(ctx_q, x, y, p, rad) {
     ctx_q.lineTo(left_space + (space + arc_r * 2) * x + Math.sin(rad2) * arc_r, (space + arc_r) + (space + arc_r * 2) * y + Math.cos(rad2) * arc_r);
     ctx_q.stroke();
 }
+
 
 function draw_circuit(test_json) {
     let cvs = document.getElementById("cv");
@@ -322,7 +355,11 @@ function draw_circuit(test_json) {
                 qbit_rect(ctx, bi, current_x, qbits_map[op.swap_qbit], op.op_name)
             }
 
-            qbit_rect(ctx, bi, current_x, y, op.op_name)
+            if (op.op_name == "N"){
+                not_rect(ctx, bi, current_x, y)
+            }else {
+                qbit_rect(ctx, bi, current_x, y, op.op_name)
+            }
         }
         if (op.control_qbits != null) {
             for (var z = 0; z < op.control_qbits.length; z++) {
