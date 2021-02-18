@@ -1,7 +1,7 @@
 # GoQKit Visualizer
 GoQKit Visualizer is a tool which help you visualize a quantium circuit and qbit's states when you build and run your GoQKit's program.
 
-![image](https://user-images.githubusercontent.com/21256885/106553011-d1219380-655b-11eb-8342-2a8a8c496dfe.png)
+![image](https://user-images.githubusercontent.com/21256885/108298718-c19f7d00-71e0-11eb-8113-ea0eec8a186c.png)
 
 ## Quick start
 ```bash
