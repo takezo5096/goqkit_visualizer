@@ -225,6 +225,14 @@ function draw_circuit(test_json) {
     for (var x = 0; x < test_json.operations.length; x++) {
         var op = test_json.operations[x]
 
+        if (op.op_name == "Sp"){
+            console.log("Sp")
+            current_x++
+            hit_qbits_array = {}
+            hit_qbits = false
+            continue
+        }
+
         if (hit_qbits_array[op.target_qbit]) {
             hit_qbits = true
             hit_qbits_array = {}
@@ -275,7 +283,16 @@ function draw_circuit(test_json) {
     var hit_qbits = false
     hit_qbits_array = {}
     for (var x = 0; x < test_json.operations.length; x++) {
+
         var op = test_json.operations[x]
+
+        if (op.op_name == "Sp"){
+            console.log("Sp")
+            current_x++
+            hit_qbits_array = {}
+            hit_qbits = false
+            continue
+        }
 
         if (hit_qbits_array[op.target_qbit]) {
             hit_qbits = true
@@ -328,6 +345,14 @@ function draw_circuit(test_json) {
     hit_qbits_array = {}
     for (var x = 0; x < test_json.operations.length; x++) {
         var op = test_json.operations[x]
+
+        if (op.op_name == "Sp"){
+            console.log("Sp")
+            current_x++
+            hit_qbits_array = {}
+            hit_qbits = false
+            continue
+        }
 
         if (hit_qbits_array[op.target_qbit]) {
             hit_qbits = true
