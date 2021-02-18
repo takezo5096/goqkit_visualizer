@@ -228,6 +228,7 @@ function draw_circuit(test_json) {
         if (hit_qbits_array[op.target_qbit]) {
             hit_qbits = true
             hit_qbits_array = {}
+            hit_qbits_array[op.target_qbit] = true
         }else{
             hit_qbits_array[op.target_qbit] = true
         }
@@ -279,6 +280,7 @@ function draw_circuit(test_json) {
         if (hit_qbits_array[op.target_qbit]) {
             hit_qbits = true
             hit_qbits_array = {}
+            hit_qbits_array[op.target_qbit] = true
         }else{
             hit_qbits_array[op.target_qbit] = true
         }
@@ -330,6 +332,7 @@ function draw_circuit(test_json) {
         if (hit_qbits_array[op.target_qbit]) {
             hit_qbits = true
             hit_qbits_array = {}
+            hit_qbits_array[op.target_qbit] = true
         }else{
             hit_qbits_array[op.target_qbit] = true
         }
@@ -340,7 +343,6 @@ function draw_circuit(test_json) {
             if (op.control_qbits == null && op.op_name != "S") {
                 hit_qbits = false
             }
-
         }
         y = qbits_map[op.target_qbit]
         var s = null
@@ -371,7 +373,6 @@ function draw_circuit(test_json) {
             }
         } else {
             if (op.op_name == "S") {
-                //qbit_rect(ctx, bi, current_x, qbits_map[op.swap_qbit], op.op_name)
                 swap_rect(ctx, bi, current_x, qbits_map[op.swap_qbit])
             }
 
