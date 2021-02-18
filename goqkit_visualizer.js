@@ -42,7 +42,7 @@ function register_v_line(ctx, bi, x, y1, y2, reg_num, w) {
     var ss = "Reg" + reg_num;
     var metrics = ctx.measureText(ss);
     var width = metrics.width;
-    var yy = (y1 * bi.op_h + bi.op_v_space + y2 * bi.op_h + bi.op_v_space) / 2
+    var yy = (y1 * bi.op_h + bi.op_v_space + y2 * bi.op_h + bi.op_v_space) / 2 + 6
     ctx.fillText(ss, bi.op_h_space - bi.op_w - width - 28, yy)
 }
 
@@ -77,7 +77,7 @@ function not_rect(ctx, bi, x, y) {
     var arc_r = 12
 
     ctx.beginPath()
-    ctx.fillStyle = "#eee"
+    ctx.fillStyle = "#202f55"
     ctx.arc((x + 1) * bi.op_w + bi.op_h_space,
         y * bi.op_h + bi.op_v_space,
         arc_r, 0, 360, false)
@@ -85,21 +85,21 @@ function not_rect(ctx, bi, x, y) {
     ctx.beginPath()
 
     ctx.lineWidth = 2
-    ctx.strokeStyle = "#999"
+    ctx.strokeStyle = "#aaa"
     ctx.arc((x + 1) * bi.op_w + bi.op_h_space,
         y * bi.op_h + bi.op_v_space,
         arc_r, 0, 360, false)
     ctx.stroke()
 
     ctx.lineWidth = 2
-    ctx.strokeStyle = "#000"
+    ctx.strokeStyle = "#fff"
     ctx.beginPath();
     //horizontal
-    ctx.moveTo((x+1) * bi.op_w +bi.op_h_space-arc_r+1, y * bi.op_h+ bi.op_v_space);
-    ctx.lineTo((x+1) * bi.op_w +bi.op_h_space+arc_r-1, y * bi.op_h+ bi.op_v_space);
+    ctx.moveTo((x+1) * bi.op_w +bi.op_h_space-arc_r+3, y * bi.op_h+ bi.op_v_space);
+    ctx.lineTo((x+1) * bi.op_w +bi.op_h_space+arc_r-3, y * bi.op_h+ bi.op_v_space);
     //vertical
-    ctx.moveTo((x+1) * bi.op_w +bi.op_h_space, y * bi.op_h+ bi.op_v_space-arc_r+1);
-    ctx.lineTo((x+1) * bi.op_w +bi.op_h_space, y * bi.op_h+ bi.op_v_space+arc_r-1);
+    ctx.moveTo((x+1) * bi.op_w +bi.op_h_space, y * bi.op_h+ bi.op_v_space-arc_r+3);
+    ctx.lineTo((x+1) * bi.op_w +bi.op_h_space, y * bi.op_h+ bi.op_v_space+arc_r-3);
     ctx.stroke();
 
 }
@@ -364,7 +364,11 @@ function draw_circuit(test_json) {
                 }
             }
 
-            qbit_rect(ctx, bi, current_x, y, op.op_name, s)
+            if (op.op_name == "P" && op.options[0] == 180 && op.control_qbits != null){
+                dot_rect(ctx, bi, current_x, y)
+            } else {
+                qbit_rect(ctx, bi, current_x, y, op.op_name, s)
+            }
         } else {
             if (op.op_name == "S") {
                 //qbit_rect(ctx, bi, current_x, qbits_map[op.swap_qbit], op.op_name)
@@ -373,8 +377,10 @@ function draw_circuit(test_json) {
 
             if (op.op_name == "N") {
                 not_rect(ctx, bi, current_x, y)
-            }else if (op.op_name == "S"){
+            }else if (op.op_name == "S") {
                 swap_rect(ctx, bi, current_x, y)
+            } else if (op.op_name == "Z" && op.control_qbits != null) {
+                dot_rect(ctx, bi, current_x, y)
             }else {
                 qbit_rect(ctx, bi, current_x, y, op.op_name)
             }
@@ -382,7 +388,7 @@ function draw_circuit(test_json) {
         if (op.control_qbits != null) {
             for (var z = 0; z < op.control_qbits.length; z++) {
                 var y2 = qbits_map[op.control_qbits[z]]
-                if (op.op_name == "Ro"  || op.op_name == "P" || op.op_name == "X" || op.op_name == "Y" || op.op_name == "Z"){
+                if (op.op_name == "Ro"){
                     qbit_rect(ctx, bi, current_x, y2, op.op_name, s)
                 }else {
                     dot_rect(ctx, bi, current_x, y2)
