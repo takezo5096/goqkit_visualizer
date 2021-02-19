@@ -28,7 +28,7 @@ function qbit_v_line(ctx, bi, x, y) {
     ctx.stroke();
 }
 
-function register_v_line(ctx, bi, x, y1, y2, reg_num, w) {
+function register_v_line(ctx, bi, x, y1, y2, reg_name, w) {
 
     ctx.lineWidth = 2
     ctx.strokeStyle = "#999"
@@ -39,11 +39,10 @@ function register_v_line(ctx, bi, x, y1, y2, reg_num, w) {
 
     ctx.fillStyle = "#fff"
     ctx.font = "bold 13px serif";
-    var ss = "Reg" + reg_num;
-    var metrics = ctx.measureText(ss);
+    var metrics = ctx.measureText(reg_name);
     var width = metrics.width;
     var yy = (y1 * bi.op_h + bi.op_v_space + y2 * bi.op_h + bi.op_v_space) / 2 + 6
-    ctx.fillText(ss, bi.op_h_space - bi.op_w - width - 28, yy)
+    ctx.fillText(reg_name, bi.op_h_space - bi.op_w - width - 35, yy)
 }
 
 function qbit_rect(ctx, bi, x, y, s, s2) {
@@ -255,13 +254,20 @@ function draw_circuit(test_json) {
     cvs.height = max_h * bi.op_h + bi.op_v_space
 
     //draw the register names and lines
-    var rs = toHex(max_qbit_num, max_qbit_num)
-    var rm = ctx.measureText(rs);
+    var max_reg_name = ""
+    for (var i = 0; i < v_len; i++) {
+        var reg_name = test_json.registers[i].reg_name
+        if (max_reg_name.length < reg_name.length){
+            max_reg_name = reg_name
+        }
+    }
+    var rm = ctx.measureText(max_reg_name);
     var rwidth = rm.width;
     var ql = 0
     for (var i = 0; i < v_len; i++) {
+        var reg_name = test_json.registers[i].reg_name
         var tmp = test_json.registers[i].qbits.length
-        register_v_line(ctx, bi, 0, ql + i, ql + i + tmp - 1, i + 1, rwidth)
+        register_v_line(ctx, bi, 0, ql + i, ql + i + tmp - 1, reg_name, rwidth)
         ql += tmp - 1
     }
 
