@@ -226,7 +226,6 @@ function draw_circuit(test_json) {
         var op = test_json.operations[x]
 
         if (op.op_name == "Sp"){
-            console.log("Sp")
             current_x++
             hit_qbits_array = {}
             hit_qbits = false
