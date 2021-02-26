@@ -38,7 +38,7 @@ GoQKit Visualizer is just a tool for visualizing GoQKit's result.
 You might have to know GoQKit more. See details of [GoQKit](https://github.com/takezo5096/goqkit).
 
 ## License
-**MIT License**
+MIT License
 
 ## Author
 https://github.com/takezo5096
