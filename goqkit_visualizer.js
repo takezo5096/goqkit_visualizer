@@ -52,7 +52,8 @@ function qbit_rect(ctx, bi, x, y, s, s2) {
     else if (s == "S") ctx.fillStyle = "#0075c2"
     else if (s == "P") ctx.fillStyle = "#006a6c"
     else if (s == "W") ctx.fillStyle = "#387d39"
-    else if (s == "Ro") ctx.fillStyle = "#c70067"
+    else if (s == "R") ctx.fillStyle = "#c70067"
+    else if (s == "Ro") ctx.fillStyle = "#202f55"
     else if (s == "N") ctx.fillStyle = "#4d4398"
     else if (s == "X" || s == "Y" || s == "Z") ctx.fillStyle = "#202f55"
 
