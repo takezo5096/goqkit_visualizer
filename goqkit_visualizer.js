@@ -379,11 +379,11 @@ function draw_circuit(test_json) {
 
             if (op.op_name == "Ro") {
                 if (op.options[0] != 0) {
-                    s = "x" + op.options[0] + "°"
+                    s = "x" + Math.round(parseFloat(op.options[0])) + "°"
                 } else if (op.options[1] != 0) {
-                    s = "y" + op.options[1] + "°"
+                    s = "y" + Math.round(parseFloat(op.options[1])) + "°"
                 } else {
-                    s = "z" + op.options[2] + "°"
+                    s = "z" + Math.round(parseFloat(op.options[2])) + "°"
                 }
             } else if (op.op_name == "R") {
                 s = op.options[0]
